@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/styles.css">
+    <title>Weather Application</title>
+</head>
+<body>
+    <main>
+        <h1 class="applicationTitle">Weather Application</h1>
+        <div class="searchBox">
+            <input class="searchBar" name="inputBox" type="text" placeholder="Input your city here" spellcheck="false">
+            <button class="searchButton"><img class="buttonImg" src="/public/imgs/search.png" alt="searchButton"></button>
+        </div>     
+        <div class="displayWeather">
+            <div class="tempDiv">
+                <div class="tempImg">
+                    <img src="/public/imgs/clear.png" alt="clear">
+                </div>
+                <div class="textDisplay">
+                    <h1 class="cityName">New york</h1>
+                    <h2 class="tempDisplay">22°C</h2>
+                </div>
+            </div>
+            <div class="humiditySpeed">
+                <div class="humidityDiv">
+                    <div class="humidityImg">
+                        <img src="/public/imgs/humidity.png" alt="humidity">
+                    </div>
+                    <div class="textDisplay">
+                        <h2 class="humidityTitle">City's humidity</h2>
+                        <h3 class="humidityDisplay">45%</h3>
+                    </div>
+                </div>
+                <div class="speedDiv">
+                    <div class="windImg">
+                        <img src="/public/imgs/wind.png" alt="wind">
+                    </div>
+                    <div class="textDisplay">
+                        <h2 class="speedTitle">City's wind speed</h2>
+                        <h3 class="speedDisplay">24</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function fetchWeather(inputCity) {
+            const weatherUrl = apiUrl + inputCity + `&appid=${apiKey}`
+            const response = await fetch(weatherUrl);
+            const data = await response.json();
+            const tempData = data.main.temp.toString() + "°C";
+            const humidityData = data.main.humidity;
+            const speedData = data.wind.speed;
+            const overallStatus = data.weather[0].main;
+            tempText.textContent = tempData;
+            humidityText.textContent = humidityData;
+            speedText.textContent = speedData;
+            cityName.textContent = inputCity;
+            if (overallStatus === 'Clear') {
+                tempImg.src = '/public/imgs/clear.png';
+                tempImg.alt = 'Clear'
+            }
+            else if (overallStatus === 'Clouds') {
+                tempImg.src = '/public/imgs/clouds.png';
+                tempImg.alt = 'Clouds'
+            }
+            else if (overallStatus === 'Snow') {
+                tempImg.src = '/public/imgs/snow.png';
+                tempImg.alt = 'Snow'               
+            }
+            else {
+                tempImg.src = '/public/imgs/drizzle.png';
+                tempImg.alt = 'Drizzle'               
+            }
+            console.log(data);
+        }
+        const defaultCity = "Ho Chi Minh";
+        const apiKey = "d6666013bade3aeb053fbfc126c97ebf"
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        const inputBar = document.querySelector('.searchBar'); 
+        const tempText = document.querySelector('.tempDisplay');         
+        const humidityText = document.querySelector('.humidityDisplay');
+        const speedText = document.querySelector('.speedDisplay');
+        const cityName = document.querySelector('.cityName');
+        const tempImg = document.querySelector('.tempImg img');
+        document.querySelector('button').addEventListener('click', () => {
+            const inputCity = inputBar.value.trim();
+            inputBar.value = '';
+        fetchWeather(inputCity)
+        })
+        window.onload = fetchWeather(defaultCity);
+    </script>
+
+</body>
+</html>
